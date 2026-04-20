@@ -72,10 +72,10 @@ async def load_revenue_file(file: UploadFile = File(...)):
             id=f"extracting_users-{file.filename.replace('/', '-')}",
             task_queue="revenue-file-queue",
         )
+        new_s3_key = s3_key.replace("telemetry", "cif-codes")
         return {
-        "message": "File validated and uploaded successfully.",
-        "bucket": S3_BUCKET,
-        "key": s3_key,
+        "message": "File processed successfully. Processed file will be available in S3 after workflow completion.",
+        "key": new_s3_key,
                }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to upload to S3: {str(e)}")
@@ -111,10 +111,10 @@ async def put_amount_on_hold(file: UploadFile = File(...)):
                 id=f"extracting_users-{file.filename.replace('/', '-')}",
                 task_queue="revenue-file-queue",
             )
+            new_s3_key = s3_key.replace("telemetry-amount-hold", "freezed-amount-on-account")
             return {
-            "message": "File validated and uploaded successfully.",
-            "bucket": S3_BUCKET,
-            "key": s3_key,
+            "message": "File processed successfully. Processed file will be available in S3 after workflow completion.",
+            "key": new_s3_key,
                 }
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error while processing: {str(e)}")
