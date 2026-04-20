@@ -26,6 +26,11 @@ temporal_client = None
 
 temporal_host_path = os.getenv("TEMPORAL_HOST_PATH", "localhost:7233")
 
+
+@app.get("/health")
+async def health_check():
+    return {"status": "up", "message": "System is up and running"}
+
 @app.on_event("startup")
 async def startup_event():
     global temporal_client
@@ -118,3 +123,4 @@ async def put_amount_on_hold(file: UploadFile = File(...)):
                 }
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error while processing: {str(e)}")
+
