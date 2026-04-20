@@ -29,7 +29,13 @@ temporal_host_path = os.getenv("TEMPORAL_HOST_PATH", "localhost:7233")
 @app.on_event("startup")
 async def startup_event():
     global temporal_client
-    temporal_client = await Client.connect(temporal_host_path)
+    # temporal_client = await Client.connect(temporal_host_path)
+    temporal_client = await Client.connect(
+    "ap-south-1.aws.api.temporal.io:7233",
+    namespace="cba-temporal.pz8tx",
+    api_key=os.getenv("TEMPORAL_API_KEY"),
+    tls=True,
+)
     if not temporal_client:
         raise Exception("Temporal client is not turning up.")
     else:
