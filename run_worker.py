@@ -20,6 +20,10 @@ from activity.hold_amount_activity import hold_account_amount, hold_account_amou
 from activity.write_amount_hold_csv_activity import write_amount_hold_csv
 from activity.fetch_file_from_s3_bucket import fetch_file_from_s3
 from activity.csv_read_activity import read_amount_on_hold_csv
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 logging.basicConfig(
     level=logging.INFO,
@@ -32,7 +36,13 @@ logger = logging.getLogger(__name__)
 async def main() -> None:
     logger.info("Starting Temporal worker")
 
-    client = await Client.connect("localhost:7233")
+    # client = await Client.connect("localhost:7233")
+    client = await Client.connect(
+    "ap-south-1.aws.api.temporal.io:7233",
+    namespace="cba-temporal.pz8tx",
+    api_key=os.getenv("TEMPORAL_API_KEY"),
+    tls=True,
+)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=50) as executor:
         worker = Worker(
